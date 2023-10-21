@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 export function isAuthenticated(req, res, next) {
     console.log("header", req.headers);
     console.log('ref', req.headers['origin'])
-    const token = req.headers["x-auth-token"]
+    const token = req.headers.authorization;
     console.log('tokencheck', token);
     if (!token) {
         return res.status(400).json({ message: "Invalid Authorization" })
