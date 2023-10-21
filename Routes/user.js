@@ -4,16 +4,16 @@ import { deleteString, findId, findUser, generateToken, getUsers, insertRandomSt
 import nodemailer from "nodemailer";
 
 const transport = nodemailer.createTransport({
-    service: "gmail",
+    service: "outlook",
     auth: {
-        user: process.env.MAIL,
+        user: 'stardinesh4@hotmail.com',
         pass: process.env.PASSWORD
     }
 })
 
 const router = express.Router();
 
-const URL = 'https://password-resetapp.netlify.app'
+const URL = 'https://password-reset-fe-main.netlify.app'
 
 
 // signup page
