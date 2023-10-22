@@ -157,15 +157,16 @@ router.post("/forgotpassword", async (req, res) => {
         <div class="header">Hello, ${user.email} 🙋‍♂️</div>
         <div class="message">
             Thank you for using our service 🙏. click below link to reset your password.
-        </div><br/>
-        <p>Refer link : </p><a href="${link}>${link}</a>
-        <a class="button" href="${link}">Reset Password</a>
+        </div>
+        <br/>
+        click to reset your password. ${link}  
+     <a class="button" href="${link}">Reset Password</a>
     </div>
 </body>
 
 </html>
 
- click below link to reset your password. ${link}`,
+`,
     };
 
     const RandomString = await insertRandomString(user._id, {
@@ -182,12 +183,10 @@ router.post("/forgotpassword", async (req, res) => {
     transport.sendMail(mailOptions, (err, info) => {
       if (err) {
         console.log(err);
-        return res
-          .status(400)
-          .json({
-            message: false,
-            error: "Error found send mail for resetpassword",
-          });
+        return res.status(400).json({
+          message: false,
+          error: "Error found send mail for resetpassword",
+        });
       } else {
         return res.status(200).json({ message: "link send successfully" });
       }
@@ -244,12 +243,10 @@ router.post("/password-reset/update", async (req, res) => {
     const deleteRamdomString = await deleteString(id, { randomstring: 1 });
     console.log("delete-R", deleteRamdomString);
     if (!user) {
-      return res
-        .status(400)
-        .json({
-          message: false,
-          error: "user not found in updating new password",
-        });
+      return res.status(400).json({
+        message: false,
+        error: "user not found in updating new password",
+      });
     }
 
     return res
