@@ -138,17 +138,6 @@ router.post("/forgotpassword", async (req, res) => {
             font-size: 18px;
             margin-bottom: 30px;
         }
-
-        .button {
-            background-color: Black;
-            color: white;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            text-decoration: none;
-        }
     </style>
 </head>
 
@@ -159,8 +148,7 @@ router.post("/forgotpassword", async (req, res) => {
             Thank you for using our service 🙏. click below link to reset your password.
         </div>
         <br/>
-        click to reset your password. ${link}  
-     <a class="button" href="${link}">Reset Password</a>
+        Link: ${link}  
     </div>
 </body>
 
