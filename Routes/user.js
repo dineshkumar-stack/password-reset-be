@@ -81,19 +81,78 @@ router.post("/login", async (req, res) => {
 router.post("/forgotpassword", async (req, res) => {
     try {
         const user = await findUser(req.body.email)
-         console.log('userfind', user);
+        //  console.log('userfind', user);
         if (!user) {
             return res.status(400).json({ message: false, error: "emailid not received" })
         }
         const randomSting = process.env.RANDOM_STRING + user._id;
         const link = `${URL}/password-reset?id=${user._id}&randomstring=${randomSting}`
-        console.log(link)
+        // console.log(link)
 
         const mailOptions = {
             from: process.env.MAIL,
             to: user.email,
             subject: 'password reset alert',
-            text: `click below link to reset your password. ${link}`
+            html: `
+
+            <!DOCTYPE html>
+            <html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset verfication mail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .button {
+            background-color: #4caf50;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">Hello, ${user.email}!</div>
+        <div class="message">
+            Thank you for using our service. click below link to reset your password.
+        </div>
+        <a class="button" href="${link}">Visit Our Website</a>
+    </div>
+</body>
+
+</html>
+
+ click below link to reset your password. ${link}`
         }
 
         const RandomString = await insertRandomString(user._id, { randomstring: randomSting })
@@ -104,12 +163,10 @@ router.post("/forgotpassword", async (req, res) => {
         }
 
         transport.sendMail(mailOptions, (err, info) => {
-            console.log(mailOptions);
             if (err) {
                 console.log(err);
                 return res.status(400).json({ message: false, error: "Error found send mail for resetpassword" })
             } else {
-                console.log('Email sent', + info)
                 return res.status(200).json({ message: "link send successfully" })
             }
         })
@@ -126,7 +183,6 @@ router.post("/password-reset", async (req, res) => {
         if (!id || !randomstring) {
             return res.status(400).json({ message: false, error: "Invalid id and string" })
         }
-        // console.log('it is working');
         const user = await findId(id)
         if (!user) {
             return res.status(400).json({ message: false, error: "user not available" })
@@ -146,17 +202,12 @@ router.post("/password-reset", async (req, res) => {
 router.post("/password-reset/update", async (req, res) => {
     try {
         const { id, newpassword } = req.query;
-        console.log("id", id);
-        console.log('newpassword', newpassword);
         if (!id || !newpassword) {
             return res.status(400).json({ message: false, error: "Error found in get id or password" })
         }
-        //  console.log('it is working');
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(newpassword, salt);
-        console.log('id', id, 'hashedpassword', hashedPassword);
         const user = await insertRandomString(id, { password: hashedPassword })
-        console.log("user-R", user)
         const deleteRamdomString = await deleteString(id, { randomstring: 1 })
         console.log("delete-R", deleteRamdomString)
         if (!user) {
